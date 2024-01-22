@@ -1,5 +1,6 @@
 import { Icon, IconKey, IconPassword, IconUser } from '@tabler/icons-react';
-import { Property } from 'csstype'
+
+import { Property } from 'csstype';
 
 import { TileBaseType } from './tile';
 
@@ -34,7 +35,7 @@ interface AppNetworkType {
 
 interface AppAppearanceType {
   iconUrl: string;
-  appNameStatus: "normal"|"hover"|"hidden";
+  appNameStatus: 'normal' | 'hover' | 'hidden';
   positionAppName: Property.FlexDirection;
   appNameFontSize: number;
   lineClampAppName: number;
@@ -55,7 +56,8 @@ export type IntegrationType =
   | 'jellyfin'
   | 'nzbGet'
   | 'pihole'
-  | 'adGuardHome';
+  | 'adGuardHome'
+  | 'homeAssistant';
 
 export type AppIntegrationType = {
   type: IntegrationType | null;
@@ -97,6 +99,7 @@ export const integrationFieldProperties: {
   plex: ['apiKey'],
   pihole: ['apiKey'],
   adGuardHome: ['username', 'password'],
+  homeAssistant: ['apiKey']
 };
 
 export type IntegrationFieldDefinitionType = {

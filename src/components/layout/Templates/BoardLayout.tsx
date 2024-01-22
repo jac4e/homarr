@@ -2,42 +2,32 @@ import { Button, Global, Text, Title, Tooltip, clsx } from '@mantine/core';
 import { useHotkeys, useWindowEvent } from '@mantine/hooks';
 import { openContextModal } from '@mantine/modals';
 import { hideNotification, showNotification } from '@mantine/notifications';
-import {
-  IconApps,
-  IconBrandDocker,
-  IconEditCircle,
-  IconEditCircleOff,
-  IconSettings,
-} from '@tabler/icons-react';
+import { IconApps, IconEditCircle, IconEditCircleOff, IconSettings } from '@tabler/icons-react';
 import Consola from 'consola';
 import { useSession } from 'next-auth/react';
 import { Trans, useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { env } from 'process';
 import { useEditModeStore } from '~/components/Dashboard/Views/useEditModeStore';
 import { useNamedWrapperColumnCount } from '~/components/Dashboard/Wrappers/gridstack/store';
 import { BoardHeadOverride } from '~/components/layout/Meta/BoardHeadOverride';
 import { HeaderActionButton } from '~/components/layout/header/ActionButton';
 import { useConfigContext } from '~/config/provider';
-import { useScreenLargerThan } from '~/hooks/useScreenLargerThan';
 import { api } from '~/utils/api';
 
 import { MainLayout } from './MainLayout';
 
 type BoardLayoutProps = {
-  dockerEnabled: boolean;
   children: React.ReactNode;
 };
 
-export const BoardLayout = ({ children, dockerEnabled }: BoardLayoutProps) => {
+export const BoardLayout = ({ children }: BoardLayoutProps) => {
   const { config } = useConfigContext();
   const { data: session } = useSession();
 
   return (
-    <MainLayout
-      autoFocusSearch={session?.user.autoFocusSearch}
-      headerActions={<HeaderActions dockerEnabled={dockerEnabled} />}
-    >
+    <MainLayout autoFocusSearch={session?.user.autoFocusSearch} headerActions={<HeaderActions />}>
       <BoardHeadOverride />
       <BackgroundImage />
       {children}
@@ -46,33 +36,16 @@ export const BoardLayout = ({ children, dockerEnabled }: BoardLayoutProps) => {
   );
 };
 
-type HeaderActionProps = {
-  dockerEnabled: boolean;
-};
-
-export const HeaderActions = ({ dockerEnabled }: HeaderActionProps) => {
+export const HeaderActions = () => {
   const { data: sessionData } = useSession();
 
   if (!sessionData?.user?.isAdmin) return null;
 
   return (
     <>
-      {dockerEnabled && <DockerButton />}
       <ToggleEditModeButton />
       <CustomizeBoardButton />
     </>
-  );
-};
-
-const DockerButton = () => {
-  const { t } = useTranslation('modules/docker');
-
-  return (
-    <Tooltip label={t('actionIcon.tooltip')}>
-      <HeaderActionButton component={Link} href="/manage/tools/docker">
-        <IconBrandDocker size={20} stroke={1.5} />
-      </HeaderActionButton>
-    </Tooltip>
   );
 };
 
@@ -107,7 +80,7 @@ const ToggleEditModeButton = () => {
   useHotkeys([['mod+E', toggleEditMode]]);
 
   useWindowEvent('beforeunload', (event: BeforeUnloadEvent) => {
-    if (enabled) {
+    if (enabled && env.NODE_ENV === 'production') {
       // eslint-disable-next-line no-param-reassign
       event.returnValue = beforeUnloadEventText;
       return beforeUnloadEventText;
@@ -154,7 +127,7 @@ const ToggleEditModeButton = () => {
                 <Text
                   component="a"
                   style={{ color: 'inherit', textDecoration: 'underline' }}
-                  href="https://homarr.dev/docs/customizations/layout"
+                  href="https://homarr.dev/docs/customizations/board-customization#screen-sizes"
                   target="_blank"
                 />
               ),
@@ -218,12 +191,13 @@ const BackgroundImage = () => {
   return (
     <Global
       styles={{
-        body: {
+        '.mantine-AppShell-root': {
           minHeight: '100vh',
           backgroundImage: `url('${config?.settings.customization.backgroundImageUrl}')`,
           backgroundPosition: 'center center',
-          backgroundSize: 'cover',
-          backgroundRepeat: 'no-repeat',
+          backgroundSize: config?.settings.customization.backgroundImageSize ?? 'cover',
+          backgroundRepeat: config?.settings.customization.backgroundImageRepeat ?? 'no-repeat',
+          backgroundAttachment: config?.settings.customization.backgroundImageAttachment ?? 'fixed',
         },
       }}
     />

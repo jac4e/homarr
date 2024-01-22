@@ -1,7 +1,7 @@
 import { Group, Image, Text } from '@mantine/core';
+import { useConfigContext } from '~/config/provider';
 import { useScreenLargerThan } from '~/hooks/useScreenLargerThan';
 
-import { useConfigContext } from '~/config/provider';
 import { usePrimaryGradient } from './useGradient';
 
 interface LogoProps {
@@ -17,7 +17,13 @@ export function Logo({ size = 'md', withoutText = false }: LogoProps) {
   return (
     <Group spacing={size === 'md' ? 'xs' : 4} noWrap>
       <Image
-        width={size === 'md' ? 50 : 12}
+        width="unset"
+        height={size === 'md' ? 38 : 12}
+        styles={{
+          image: {
+            objectFit: 'contain !important' as 'contain',
+          },
+        }}
         src={config?.settings.customization.logoImageUrl || '/imgs/logo/logo-color.svg'}
         alt="Homarr Logo"
         className="dashboard-header-logo-image"

@@ -3,7 +3,6 @@ import { Group, Image, Select, SelectItem, Text } from '@mantine/core';
 import { UseFormReturnType } from '@mantine/form';
 import { useTranslation } from 'next-i18next';
 import { forwardRef } from 'react';
-
 import {
   AppIntegrationPropertyType,
   AppIntegrationType,
@@ -184,4 +183,9 @@ export const availableIntegrations = [
     image: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/adguard-home.png',
     label: 'AdGuard Home',
   },
+  {
+    value: 'homeAssistant',
+    image: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons@master/png/home-assistant.png',
+    label: 'Home Assistant'
+  }
 ] as const satisfies Readonly<SelectItem[]>;

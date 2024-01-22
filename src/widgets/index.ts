@@ -9,12 +9,13 @@ import iframe from './iframe/IFrameTile';
 import mediaRequestsList from './media-requests/MediaRequestListTile';
 import mediaRequestsStats from './media-requests/MediaRequestStatsTile';
 import mediaServer from './media-server/MediaServerTile';
+import notebook from './notebook/NotebookWidgetTile';
 import rss from './rss/RssWidgetTile';
+import smartHomeEntityState from './smart-home/entity-state/entity-state.widget';
 import torrent from './torrent/TorrentTile';
 import usenet from './useNet/UseNetTile';
 import videoStream from './video/VideoStreamTile';
 import weather from './weather/WeatherTile';
-import notebook from './notebook/NotebookWidgetTile';
 
 export default {
   calendar,
@@ -34,4 +35,5 @@ export default {
   'dns-hole-controls': dnsHoleControls,
   bookmark,
   notebook,
+  'smart-home/entity-state': smartHomeEntityState
 };

@@ -135,12 +135,7 @@ export default function AuthInvitePage() {
                 withAsterisk
                 {...form.getInputProps('password')}
               />
-              <Card
-                withBorder
-                style={{
-                  display: form.isValid('password') ? 'none' : 'block',
-                }}
-              >
+              <Card>
                 <PasswordRequirements value={form.values.password} />
               </Card>
 

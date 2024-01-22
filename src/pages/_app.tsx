@@ -13,27 +13,29 @@ import { Session } from 'next-auth';
 import { SessionProvider, getSession } from 'next-auth/react';
 import { appWithTranslation } from 'next-i18next';
 import { AppProps } from 'next/app';
+import Script from 'next/script';
 import { useEffect, useState } from 'react';
 import 'video.js/dist/video-js.css';
 import { CommonHead } from '~/components/layout/Meta/CommonHead';
+import { ConfigProvider } from '~/config/provider';
 import { env } from '~/env.js';
 import { ColorSchemeProvider } from '~/hooks/use-colorscheme';
 import { modals } from '~/modals';
+import { usePackageAttributesStore } from '~/tools/client/zustands/usePackageAttributesStore';
+import { ColorTheme } from '~/tools/color';
 import { getLanguageByCode } from '~/tools/language';
+import {
+  ServerSidePackageAttributesType,
+  getServiceSidePackageAttributes,
+} from '~/tools/server/getPackageVersion';
+import { theme } from '~/tools/server/theme/theme';
 import { ConfigType } from '~/types/config';
 import { api } from '~/utils/api';
 import { colorSchemeParser } from '~/validations/user';
 
 import { COOKIE_COLOR_SCHEME_KEY, COOKIE_LOCALE_KEY } from '../../data/constants';
 import nextI18nextConfig from '../../next-i18next.config.js';
-import { ConfigProvider } from '~/config/provider';
 import '../styles/global.scss';
-import { ColorTheme } from '~/tools/color';
-import {
-  ServerSidePackageAttributesType,
-  getServiceSidePackageAttributes,
-} from '~/tools/server/getPackageVersion';
-import { theme } from '~/tools/server/theme/theme';
 
 dayjs.extend(locale);
 dayjs.extend(utc);
@@ -45,6 +47,7 @@ function App(
     environmentColorScheme: MantineColorScheme;
     packageAttributes: ServerSidePackageAttributesType;
     editModeEnabled: boolean;
+    analyticsEnabled: boolean;
     config?: ConfigType;
     primaryColor?: MantineTheme['primaryColor'];
     secondaryColor?: MantineTheme['primaryColor'];
@@ -55,9 +58,10 @@ function App(
   }>
 ) {
   const { Component, pageProps } = props;
+  const analyticsEnabled = pageProps.analyticsEnabled ?? true;
   // TODO: make mapping from our locales to moment locales
   const language = getLanguageByCode(pageProps.session?.user?.language ?? 'en');
-  require(`dayjs/locale/${language.locale}.js`);
+  if (language.locale !== 'cr') require(`dayjs/locale/${language.locale}.js`);
   dayjs.locale(language.locale);
 
   const [primaryColor, setPrimaryColor] = useState<MantineTheme['primaryColor']>(
@@ -89,9 +93,27 @@ function App(
     };
   }, [props.pageProps]);
 
+  const { setInitialPackageAttributes } = usePackageAttributesStore();
+  useEffect(() => {
+    setInitialPackageAttributes(props.pageProps.packageAttributes);
+  }, []);
+
   return (
     <>
       <CommonHead />
+      {pageProps.session && pageProps.session.user.language === 'cr' && (
+        <>
+          <Script type="text/javascript" src="//cdn.crowdin.com/jipt/jipt.js" />
+          <Script type="text/javascript">var _jipt = []; _jipt.push(['project', 'homarr']);</Script>
+        </>
+      )}
+      {analyticsEnabled === true && (
+        <Script
+          src="https://umami.homarr.dev/script.js"
+          data-website-id="f133f10c-30a7-4506-889c-3a803f328fa4"
+          strategy="lazyOnload"
+        />
+      )}
       <SessionProvider session={pageProps.session}>
         <ColorSchemeProvider {...pageProps}>
           {(colorScheme) => (
@@ -144,6 +166,8 @@ App.getInitialProps = async ({ ctx }: { ctx: GetServerSidePropsContext }) => {
     );
   }
 
+  const analyticsEnabled = env.NEXT_PUBLIC_DISABLE_ANALYTICS !== 'true';
+
   const session = await getSession(ctx);
 
   // Set the cookie language to the user language if it is not set correctly
@@ -156,6 +180,7 @@ App.getInitialProps = async ({ ctx }: { ctx: GetServerSidePropsContext }) => {
     pageProps: {
       ...getActiveColorScheme(session, ctx),
       packageAttributes: getServiceSidePackageAttributes(),
+      analyticsEnabled,
       session,
       locale: ctx.locale ?? 'en',
     },
