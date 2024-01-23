@@ -83,6 +83,7 @@ function CalendarTile({ widget }: CalendarTileProps) {
 
   return (
     <Calendar
+      placeholder="Select date"
       defaultDate={new Date()}
       onPreviousMonth={setMonth}
       onNextMonth={setMonth}

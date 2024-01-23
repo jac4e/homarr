@@ -11,7 +11,7 @@ export const useI18nZodResolver = () => {
 };
 
 const i18nZodResolver =
-  (t: TFunction<'zod', undefined, 'zod'>) =>
+  (t: TFunction<'zod', 'zod'>) =>
   <TSchema extends ZodSchema<Record<string, any>>>(schema: TSchema) => {
     z.setErrorMap(zodErrorMap(t));
     return zodResolver(schema);
@@ -107,7 +107,7 @@ const handleZodError = (issue: z.ZodIssueOptionalMessage, ctx: ErrorMapCtx) => {
   };
 };
 
-function zodErrorMap(t: TFunction<'zod', undefined, 'zod'>) {
+function zodErrorMap(t: TFunction<'zod', 'zod'>) {
   return (issue: z.ZodIssueOptionalMessage, ctx: ErrorMapCtx) => {
     const error = handleZodError(issue, ctx);
     if ('message' in error && error.message)

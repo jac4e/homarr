@@ -1,4 +1,4 @@
-import { Box, Card, Center, Container, Flex, Text } from '@mantine/core';
+import { Card, Center, Container, Flex, Text } from '@mantine/core';
 import { useElementSize } from '@mantine/hooks';
 import {
   IconAd,
@@ -159,7 +159,7 @@ const StatCard = ({ item, data, usePiHoleColors }: StatCardProps) => {
             </Text>
             {item.label && (
               <Text align="center" lh={1.2} size="0.75rem">
-                {t<string>(item.label)}
+                {t(item.label)}
               </Text>
             )}
           </Flex>

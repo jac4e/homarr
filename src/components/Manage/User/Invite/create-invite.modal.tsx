@@ -39,6 +39,7 @@ export const CreateInviteModal = ({ id }: ContextModalProps<{}>) => {
       <Text>{t('modals.create.description')}</Text>
 
       <DateTimePicker
+        placeholder={t('modals.create.form.expiresPlaceholder')}
         popoverProps={{ withinPortal: true }}
         minDate={minDate}
         maxDate={maxDate}
