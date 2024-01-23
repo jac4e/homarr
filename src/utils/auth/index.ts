@@ -40,7 +40,6 @@ declare module 'next-auth/jwt' {
 
 export const providers: (CredentialsConfig | OAuthConfig<any>)[] = [];
 
-if (env.AUTH_PROVIDER.includes('ldap')) providers.push((await import('./ldap')).default);
-if (env.AUTH_PROVIDER.includes('credentials'))
-  providers.push((await import('./credentials')).default);
-if (env.AUTH_PROVIDER.includes('oidc')) providers.push((await import('./oidc')).default);
+if (env.AUTH_PROVIDER?.includes('ldap')) providers.push((await import('./ldap')).default);
+if (env.AUTH_PROVIDER?.includes('credentials')) providers.push((await import('./credentials')).default);
+if (env.AUTH_PROVIDER?.includes('oidc')) providers.push((await import('./oidc')).default);

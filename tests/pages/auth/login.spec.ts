@@ -37,6 +37,9 @@ describe('login page', () => {
       props: {
         redirectAfterLogin: null,
         isDemo: false,
+        oidcAutoLogin: null,
+        oidcProviderName: null,
+        providers: undefined,
         _i18Next: 'hello',
       },
     });
@@ -74,6 +77,9 @@ describe('login page', () => {
       props: {
         redirectAfterLogin: '/manage/users/create',
         isDemo: false,
+        oidcAutoLogin: null,
+        oidcProviderName: null,
+        providers: undefined,
         _i18Next: 'hello',
       },
     });
@@ -111,6 +117,9 @@ describe('login page', () => {
       props: {
         redirectAfterLogin: null,
         isDemo: false,
+        oidcAutoLogin: null,
+        oidcProviderName: null,
+        providers: undefined,
         _i18Next: 'hello',
       },
     });
