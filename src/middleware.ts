@@ -30,7 +30,7 @@ export async function middleware(req: NextRequest) {
   }
 
   // Do not redirect if there are users in the database
-  if (cachedUserCount > 0 || !(await shouldRedirectToOnboard())) {
+  if (cachedUserCount > 0 || !(await shouldRedirectToOnboard()) || !(process.env.AUTH_PROVIDERS?.split(',').includes('credentials'))) {
     // redirect to login if not logged in
     // not working, should work in next-auth 5
     // @see https://github.com/nextauthjs/next-auth/pull/7443
